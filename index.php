@@ -53,7 +53,6 @@ if(!empty($_GET['status'])){
                 Select Bank <br />
                 <input type="radio" name="selectBank" value="HDFC" checked> HDFC &nbsp;&nbsp;
                 <input type="radio" name="selectBank" value="SBI"> SBI &nbsp;&nbsp;
-                <input type="radio" name="selectBank" value="bank3"> Bank3
                 <br />
                 <input type="file" name="file" />
                 <input type="submit" class="btn btn-primary" name="importSubmit" value="IMPORT">
