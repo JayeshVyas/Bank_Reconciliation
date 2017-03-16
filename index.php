@@ -52,7 +52,7 @@ if(!empty($_GET['status'])){
             <form action="importData.php" method="post" enctype="multipart/form-data" id="importFrm">
                 Select Bank <br />
                 <input type="radio" name="selectBank" value="HDFC" checked> HDFC &nbsp;&nbsp;
-                <input type="radio" name="selectBank" value="bank2"> Bank2 &nbsp;&nbsp;
+                <input type="radio" name="selectBank" value="SBI"> SBI &nbsp;&nbsp;
                 <input type="radio" name="selectBank" value="bank3"> Bank3
                 <br />
                 <input type="file" name="file" />
