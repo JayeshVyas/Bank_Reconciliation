@@ -18,17 +18,39 @@ if(isset($_POST['importSubmit'])){
             $bank = $_POST["selectBank"];
             
             //parse data from csv file line by line
-            while(($line = fgetcsv($csvFile)) !== FALSE){
+            while(($line = fgetcsv($csvFile)) !== FALSE)
+            {
                 //check whether data already exists in database with same entries
-                $prevQuery = "SELECT id FROM bankStatement WHERE particulars = '".$line[1]."' and cdate = '".$line[0]."' and reference= '".$line[2]."' and deposits = '".$line[4]."' and withdrawals = '".$line[5]."' and bankname = '".$bank."'";
+                $prevResults='SELECT * from bankStatement';
+                echo $bank;
+                if($bank == 'HDFC')
+                {
+                    $prevQuery = "SELECT id FROM bankStatement WHERE particulars = '".$line[1]."' and cdate = '".$line[0]."' and reference= '".$line[2]."' and deposits = '".$line[4]."' and withdrawals = '".$line[5]."' and bankname = '".$bank."'";
+                }
+                else if($bank == 'SBI')
+                {
+                    $prevQuery = "SELECT id FROM bankStatement WHERE particulars = '".$line[2]."' and cdate = '".$line[0]."' and reference= '".$line[3]."' and deposits = '".$line[5]."' and withdrawals = '".$line[4]."' and bankname = '".$bank."'";
+                }
                 $prevResult = $db->query($prevQuery);
-                if($prevResult->num_rows > 0){
+                if($prevResult->num_rows > 0)
+                {
                     
-                }else{
+                }
+                else
+                {
                     //insert bank data into database
-                    if($bank == 'HDFC') {
-                     $sql= "INSERT INTO bankStatement (cdate, particulars, reference, deposits, withdrawals, bankname) VALUES ('$line[0]','$line[1]','$line[2]','$line[4]','$line[5]', '$bank');";
-                    $db->query($sql);
+                    // If bank name is HDFC
+                    if($bank == 'HDFC') 
+                    {
+                        $sql= "INSERT INTO bankStatement (cdate, particulars, reference, deposits, withdrawals, bankname) VALUES ('$line[0]','$line[1]','$line[2]','$line[4]','$line[5]', '$bank');";
+                        $db->query($sql);
+                    }
+                    
+                    //If bank name if SBI
+                    else if($bank == 'SBI') 
+                    {
+                        $sql= "INSERT INTO bankStatement (cdate, particulars, reference, deposits, withdrawals, bankname) VALUES ('$line[0]','$line[2]','$line[3]','$line[5]','$line[4]', '$bank');";
+                        $db->query($sql);
                     }
                 }
             }
@@ -46,4 +68,4 @@ if(isset($_POST['importSubmit'])){
 }
 
 //redirect to the listing page
-header("Location: index.php".$qstring);
+//header("Location: index.php".$qstring);
