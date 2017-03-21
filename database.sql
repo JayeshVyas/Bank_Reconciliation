@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 16, 2017 at 03:23 AM
+-- Generation Time: Mar 21, 2017 at 09:02 AM
 -- Server version: 10.1.13-MariaDB
 -- PHP Version: 5.6.23
 
@@ -37,9 +37,22 @@ CREATE TABLE `bankstatement` (
   `status` enum('1','0') COLLATE utf8_unicode_ci DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `bankstatement`
+-- Table structure for table `internalstatement`
 --
+
+CREATE TABLE `internalstatement` (
+  `id` int(11) NOT NULL,
+  `cdate` varchar(15) NOT NULL,
+  `particulars` varchar(150) NOT NULL,
+  `reference` varchar(100) DEFAULT NULL,
+  `bankname` varchar(50) NOT NULL,
+  `deposits` decimal(20,2) DEFAULT NULL,
+  `withdrawals` decimal(20,2) DEFAULT NULL,
+  `status` enum('1','0') NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Indexes for dumped tables
@@ -52,6 +65,12 @@ ALTER TABLE `bankstatement`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `internalstatement`
+--
+ALTER TABLE `internalstatement`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -59,7 +78,12 @@ ALTER TABLE `bankstatement`
 -- AUTO_INCREMENT for table `bankstatement`
 --
 ALTER TABLE `bankstatement`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `internalstatement`
+--
+ALTER TABLE `internalstatement`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
