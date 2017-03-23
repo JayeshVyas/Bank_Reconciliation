@@ -48,7 +48,10 @@ include 'DBConfig.php';
                     $query = $db->query("SELECT * FROM bankstatement");
                     if($query->num_rows > 0){ 
                     $i=0;
-                        while($row = $query->fetch_assoc()){
+                        while($row = $query->fetch_assoc())
+                        {
+                            if($row['status'] == 1)
+                            {
                         ?>
                          <form action="" method="post" enctype="multipart/form-data">
                          <tr>
@@ -58,9 +61,13 @@ include 'DBConfig.php';
                             <td><?php echo $row['deposits']; ?></td>
                             <td><?php echo $row['withdrawals']; ?></td>
                             <td><?php echo $row['bankname']; ?></td>
-                            <td><?php echo $row['status']; ?></td>
+                            <td>Unreconciled</td>
+                            
                             <td><input type="checkbox" name="ch[$i++]"/><label for="reconcile bank stmt"></label></td>
                         </tr>
+                             <?php
+                            }
+                            ?>
                      </form>
                     <?php } 
                     }else{ ?>
@@ -87,9 +94,9 @@ include 'DBConfig.php';
                         <th>Date</th>
                         <th>Particulars</th>
                         <th>Cheque/Ref. No.</th>
-                        <th>Bank Name</th>
                         <th>Deposits</th>
                         <th>Withdrawals</th>
+                        <th>Bank Name</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -107,7 +114,18 @@ include 'DBConfig.php';
                         <td><?php echo $row['deposits']; ?></td>
                         <td><?php echo $row['withdrawals']; ?></td>
                         <td><?php echo $row['bankname']; ?></td>
-                        <td><?php echo $row['status']; ?></td>
+                        <td>
+                            <?php
+                                if($row['status'] == 1)
+                                {
+                                    echo "Unreconciled";
+                                }
+                                else
+                                {
+                                    echo "Reconciled";
+                                }
+                            ?>
+                        </td>
                         <td><input type="checkbox" name="ch1"/><label for="reconcile internal"></label></td>
                     </tr>
                     <?php } }else{ ?>
