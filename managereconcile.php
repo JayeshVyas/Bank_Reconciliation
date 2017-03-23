@@ -48,9 +48,8 @@ include 'DBConfig.php';
                     $query = $db->query("SELECT * FROM bankstatement");
                     if($query->num_rows > 0){ 
                     $i=0;
-                        while($row = $query->fetch_assoc())
-                        {
-                            if($row['status'] == 1)
+                        while($row = $query->fetch_assoc()){
+                            if($row['status'] == 0)
                             {
                         ?>
                          <form action="" method="post" enctype="multipart/form-data">
@@ -61,16 +60,17 @@ include 'DBConfig.php';
                             <td><?php echo $row['deposits']; ?></td>
                             <td><?php echo $row['withdrawals']; ?></td>
                             <td><?php echo $row['bankname']; ?></td>
-                            <td>Unreconciled</td>
-                            
+                            <td><?php echo $row['status']; ?></td>
                             <td><input type="checkbox" name="ch[$i++]"/><label for="reconcile bank stmt"></label></td>
                         </tr>
-                             <?php
-                            }
-                            ?>
                      </form>
-                    <?php } 
-                    }else{ ?>
+                    <?php
+                            }
+                        }
+                    }
+                    else
+                    { 
+                    ?>
                     <tr><td colspan="8">No record(s) found.....</td></tr>
                     <?php } ?>
                 </tbody>
@@ -106,6 +106,8 @@ include 'DBConfig.php';
                     $query = $db->query("SELECT * FROM internalstatement");
                     if($query->num_rows > 0){ 
                         while($row = $query->fetch_assoc()){
+                            if($row['status'] == 0)
+                            {
                         ?>
                     <tr>
                         <td><?php echo $row['cdate']; ?></td>
@@ -114,21 +116,15 @@ include 'DBConfig.php';
                         <td><?php echo $row['deposits']; ?></td>
                         <td><?php echo $row['withdrawals']; ?></td>
                         <td><?php echo $row['bankname']; ?></td>
-                        <td>
-                            <?php
-                                if($row['status'] == 1)
-                                {
-                                    echo "Unreconciled";
-                                }
-                                else
-                                {
-                                    echo "Reconciled";
-                                }
-                            ?>
-                        </td>
+                        <td><?php echo $row['status']; ?></td>
                         <td><input type="checkbox" name="ch1"/><label for="reconcile internal"></label></td>
                     </tr>
-                    <?php } }else{ ?>
+                    <?php
+                            }
+                        }
+                    }
+                        else
+                        { ?>
                     <tr><td colspan="8">No record(s) found.....</td></tr>
                     <?php } ?>
                 </tbody>
