@@ -83,7 +83,7 @@ if(!empty($_GET['status'])){
                         <td><?php echo $row['deposits']; ?></td>
                         <td><?php echo $row['withdrawals']; ?></td>
                         <td><?php echo $row['bankname']; ?></td>
-                        <td><?php echo $row['status']; ?></td>
+                        <td><?php echo $row['status'];?></td>
                     </tr>
                     <?php } }else{ ?>
                     <tr><td colspan="8">No record(s) found.....</td></tr>
