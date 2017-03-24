@@ -1,96 +1,71 @@
 <?php
-//load the database configuration file
 include 'DBConfig.php';
+
+if(!empty($_GET['status'])){
+    switch($_GET['status']){
+        case 'succ':
+            $statusMsgClass = 'alert-success';
+            $statusMsg = 'Statement has been uploaded successfully.';
+            break;
+        case 'err':
+            $statusMsgClass = 'alert-danger';
+            $statusMsg = 'Some problem occurred, please try again.';
+            break;
+        case 'invalid_file':
+            $statusMsgClass = 'alert-danger';
+            $statusMsg = 'Please upload a valid CSV file.';
+            break;
+        default:
+            $statusMsgClass = '';
+            $statusMsg = '';
+    }
+}
+		
 ?>
-<!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Bank Statement</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <style type="text/css">
-        .panel-heading a{float: right;}
-        #importFrm{margin-bottom: 20px;display: none;}
-        #importFrm input[type=file] {display: inline;}
-    </style>
+  <title>Bank Statement</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js" ></script>
+  <link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
+  
 </head>
 <body>
-<form action="managerecon.php" method="post" id="manage">
-    <div class="container">
-        <h2>Bank Statement</h2>
-        <?php if(!empty($statusMsg)){
-            echo '<div class="alert '.$statusMsgClass.'">'.$statusMsg.'</div>';
-        } ?>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            Statement
-        </div>
-        <div class="panel-body">
 
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Particulars</th>
-                        <th>Cheque/Ref. No.</th>
-                        <th>Deposits</th>
-                        <th>Withdrawals</th>
-                        <th>Bank Name</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    //get rows query
-                    $query = $db->query("SELECT * FROM bankstatement");
-                    if($query->num_rows > 0){ 
-                    $i=0;
-                        while($row = $query->fetch_assoc()){
-                            if($row['status'] == 0)
-                            {
-                        ?>
-                         <form action="" method="post" enctype="multipart/form-data">
-                         <tr>
-                            <td><?php echo $row['cdate']; ?></td>
-                            <td><?php echo $row['particulars']; ?></td>
-                            <td><?php echo $row['reference']; ?></td>
-                            <td><?php echo $row['deposits']; ?></td>
-                            <td><?php echo $row['withdrawals']; ?></td>
-                            <td><?php echo $row['bankname']; ?></td>
-                            <td><?php echo $row['status']; ?></td>
-                            <td><input type="checkbox" name="ch[$i++]"/><label for="reconcile bank stmt"></label></td>
-                        </tr>
-                     </form>
-                    <?php
-                            }
-                        }
-                    }
-                    else
-                    { 
-                    ?>
-                    <tr><td colspan="8">No record(s) found.....</td></tr>
-                    <?php } ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-<div class="container">
-        <h2>Internal Statement</h2>
-        <?php if(!empty($statusMsg)){
+<div class="container-fluid" >
+  <?php if(!empty($statusMsg)){
             echo '<div class="alert '.$statusMsgClass.'">'.$statusMsg.'</div>';
         } ?>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            Statement
-        </div>
-        <div class="panel-body">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
+		
+		
+		 
+		<nav class="navbar navbar-inverse navbar-static-top" role="navigation" style="background-color:white;">
+    <div class="container-fluid">
+                     Statement
+            <a href="javascript:void(0);" onclick="$('#importFrm').slideToggle();">Import Another Statement</a>
+			<form action="importData.php" method="post" enctype="multipart/form-data" id="importFrm">
+                Select Bank <br />
+                <input type="radio" name="selectBank" value="HDFC" checked> HDFC &nbsp;&nbsp;
+                <input type="radio" name="selectBank" value="SBI"> SBI &nbsp;&nbsp;
+                <br />
+                <input type="file" name="file" />
+                <input type="submit" class="btn btn-primary" name="importSubmit" value="IMPORT">
+            </form>
+    </div>
+</nav>
+
+
+  <div class="row">
+    <div class="col-sm-6" style="background-color:white">
+    	                                                                             
+  <div class="table-responsive">          
+  <table  id="preTable" class="table table-striped" >
+						<thead>
+							<tr>
                         <th>Date</th>
                         <th>Particulars</th>
                         <th>Cheque/Ref. No.</th>
@@ -98,42 +73,88 @@ include 'DBConfig.php';
                         <th>Withdrawals</th>
                         <th>Bank Name</th>
                         <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    //get rows query
-                    $query = $db->query("SELECT * FROM internalstatement");
-                    if($query->num_rows > 0){ 
-                        while($row = $query->fetch_assoc()){
-                            if($row['status'] == 0)
-                            {
-                        ?>
-                    <tr>
+						<th></th>
+                    </tr>	
+						</thead>
+						<tbody>
+						<?php
+						//	require("filedata.php");
+						$sql = "SELECT * FROM bankstatement";
+						$result  = mysqli_query($db,$sql);
+						while($row=mysqli_fetch_array($result)){			
+?>						
+						 <tr>
+						
                         <td><?php echo $row['cdate']; ?></td>
                         <td><?php echo $row['particulars']; ?></td>
                         <td><?php echo $row['reference']; ?></td>
                         <td><?php echo $row['deposits']; ?></td>
                         <td><?php echo $row['withdrawals']; ?></td>
                         <td><?php echo $row['bankname']; ?></td>
-                        <td><?php echo $row['status']; ?></td>
-                        <td><input type="checkbox" name="ch1"/><label for="reconcile internal"></label></td>
-                    </tr>
-                    <?php
-                            }
-                        }
-                    }
-                        else
-                        { ?>
-                    <tr><td colspan="8">No record(s) found.....</td></tr>
-                    <?php } ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+                        <td><?php echo $row['status'];?></td>
+						<td><input type="checkbox" name="ch[$i++]"/><label for="reconcile bank stmt"></label></td>
 
- </form>
- <button type="submit" form="manage" value="Submit" style="float: right;">Reconcile Checked</button>
+                    
+					</tr>
+					
+						<?php } ?>
+						</tbody>
+						</table>
+  </div>
+    
+    </div>
+    <div class="col-sm-6" style="background-color:lavenderblush;">
+                                     
+  <div class="table-responsive">          
+  <table  id="preTable2" class="table table-striped" >
+						<thead>
+							<tr>
+                        <th>Date</th>
+                        <th>Particulars</th>
+                        <th>Cheque/Ref. No.</th>
+                        <th>Deposits</th>
+                        <th>Withdrawals</th>
+                        <th>Bank Name</th>
+                        <th>Status</th>
+						<th></th>
+                    </tr>	
+						</thead>
+						<tbody>
+						<?php 	
+						//	require("filedata.php");
+						$sql = "SELECT * FROM internalstatement";
+						$result  = mysqli_query($db,$sql);
+						while($row=mysqli_fetch_array($result)){			
+?>						
+						 <tr>
+                        <td><?php echo $row['cdate']; ?></td>
+                        <td><?php echo $row['particulars']; ?></td>
+                        <td><?php echo $row['reference']; ?></td>
+                        <td><?php echo $row['deposits']; ?></td>
+                        <td><?php echo $row['withdrawals']; ?></td>
+                        <td><?php echo $row['bankname']; ?></td>
+                        <td><?php echo $row['status'];?></td>
+						<td><input type="checkbox" name="ch[$i++]"/><label for="reconcile bank stmt"></label></td>
+                    </tr>
+						<?php } ?>
+    </tbody>
+  </table>
+  </div>
+    </div>
+  </div>
+</div>
+    <script>
+			$(document).ready(function(){    
+			$('#preTable').dataTable({
+				"order": [[ 1, "desc" ]],
+				responsive: true
+			});
+			
+			$('#preTable2').dataTable({
+				"order": [[ 1, "desc" ]],
+				responsive: true
+			});
+	});
+	</script>
 </body>
 </html>
