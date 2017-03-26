@@ -28,7 +28,7 @@ if(!empty($_GET['status'])){
     <title>Bank Statement</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="css/">
+    <link rel="stylesheet" type="text/css" href="css/style1.css">
     <script src="js/js1.js"></script>
     <script src="js/js2.js"></script>
     <style type="text/css">
