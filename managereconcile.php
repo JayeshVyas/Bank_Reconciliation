@@ -24,15 +24,42 @@ if(!empty($_GET['status'])){
 ?>
 <html lang="en">
 <head>
-  <title>Bank Statement</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js" ></script>
-  <link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
-  
+    <title>Bank Statement</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="css/style1.css">
+    <script src="js/js1.js"></script>
+    <script src="js/js2.js"></script>
+    <script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js" ></script>
+    <link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">
+    <script>
+        x = 0;
+        function myFunction(a)
+        {
+            if (x==0)
+            {
+                document.getElementById(a).innerHTML = a;
+                x = 1;
+            }
+            else
+            {
+                b = a.substring(0, 8);
+                document.getElementById(a).innerHTML = b;
+                x = 0;
+            }
+        }
+    </script>
+    <style>
+        body, td, th
+        {
+            font-size: 14px;
+        }
+        td 
+        {
+            text-align: center;
+            vertical-align: middle;
+        }
+    </style>
 </head>
 <body>
 <form action="changestatus.php" method="post" id="manage">
@@ -43,20 +70,7 @@ if(!empty($_GET['status'])){
 		
 		
 		 
-		<nav class="navbar navbar-inverse navbar-static-top" role="navigation" style="background-color:white;">
-    <!--<div class="container-fluid">
-                     Statement
-            <a href="javascript:void(0);" onclick="$('#importFrm').slideToggle();">Import Another Statement</a>
-			<form action="importData.php" method="post" enctype="multipart/form-data" id="importFrm">
-                Select Bank <br />
-                <input type="radio" name="selectBank" value="HDFC" checked> HDFC &nbsp;&nbsp;
-                <input type="radio" name="selectBank" value="SBI"> SBI &nbsp;&nbsp;
-                <br />
-                <input type="file" name="file" />
-                <input type="submit" class="btn btn-primary" name="importSubmit" value="IMPORT">
-            </form>
-    </div>-->
-</nav>
+		<nav class="navbar navbar-inverse navbar-static-top" role="navigation" style="background-color:white;"></nav>
 
 
   <div class="row">
@@ -66,15 +80,14 @@ if(!empty($_GET['status'])){
   <table  id="preTable" class="table table-striped" >
 						<thead>
 							<tr>
-                        <th>Date</th>
-                        <th>Particulars</th>
-                        <th>Cheque/Ref. No.</th>
-                        <th>Deposits</th>
-                        <th>Withdrawals</th>
-                        <th>Bank Name</th>
-                        <th>Status</th>
-						<th></th>
-                    </tr>	
+                                <th>Date</th>
+                                <th>Particulars</th>
+                                <th>Cheque/Ref.</th>
+                                <th>Deposits</th>
+                                <th>Withdrawals</th>
+                                <th>Bank</th>
+                                <th>Rec.</th>
+                            </tr>	
 						</thead>
 						<tbody>
 						<?php
@@ -83,19 +96,43 @@ if(!empty($_GET['status'])){
 						$result  = mysqli_query($db,$sql);
 						if($result->num_rows > 0){
 						while($row=mysqli_fetch_array($result)){
-                                                   if($row['status'] == 0)
-                                                   {			
-?>						
-						 <tr>
-						
-                        <td><?php echo $row['cdate']; ?></td>
-                        <td><?php echo $row['particulars']; ?></td>
-                        <td><?php echo $row['reference']; ?></td>
-                        <td><?php echo $row['deposits']; ?></td>
-                        <td><?php echo $row['withdrawals']; ?></td>
-                        <td><?php echo $row['bankname']; ?></td>
-                        <td><?php echo $row['status'];?></td>
-						<td><input type="radio" name="reconciled" value="<?php echo $row['id'] ?>"><br><label for="reconcile bank stmt"></label></td>
+                            if($row['status'] == 0)
+                            {
+                            ?>
+                            <tr>
+                                
+                                <td>
+                                    <?php
+                                        $date = $row['cdate'];
+                                        echo substr("$date", 0, 6);
+                                    ?>
+                                </td>
+                                
+                                <?php $particulars = $row['particulars'];?>
+                                <td onclick="myFunction('<?php echo $particulars; ?>');">
+                                    <span id="<?php echo $particulars; ?>">
+                                        <?php
+                                            echo substr("$particulars", 0, 8) . "...";
+                                        ?>
+                                    </span>
+                                </td>
+                                
+                                <?php $ref = $row['reference'];?>
+                                <td onclick="myFunction('<?php echo $ref; ?>');">
+                                    <span id="<?php echo $ref; ?>">
+                                        <?php
+                                            echo substr("$ref", 0, 7) . "...";
+                                        ?>
+                                    </span>
+                                </td>
+                                
+                                <td><?php echo $row['deposits']; ?></td>
+                                <td><?php echo $row['withdrawals']; ?></td>
+                                <td><?php echo $row['bankname']; ?></td>
+                                <td>
+                                    <input type="radio" name="reconciled" value="<?php echo $row['id'] ?>"><br>
+                                    <label for="reconcile bank stmt"></label>
+                                </td>
 
                     
 					</tr>
@@ -114,16 +151,14 @@ if(!empty($_GET['status'])){
   <table  id="preTable2" class="table table-striped" >
 						<thead>
 							<tr>
-						<th></th>
-                        <th>Date</th>
-                        <th>Particulars</th>
-                        <th>Cheque/Ref. No.</th>
-                        <th>Deposits</th>
-                        <th>Withdrawals</th>
-                        <th>Bank Name</th>
-                        <th>Status</th>
-						<th></th>
-                    </tr>	
+                                <th>Rec.</th>
+                                <th>Date</th>
+                                <th>Particulars</th>
+                                <th>Cheque/Ref.</th>
+                                <th>Deposits</th>
+                                <th>Withdrawals</th>
+                                <th>Bank</th>
+                            </tr>	
 						</thead>
 						<tbody>
 						<?php 	
@@ -133,18 +168,43 @@ if(!empty($_GET['status'])){
 						if($result->num_rows > 0)
 						{
 						while($row=mysqli_fetch_array($result)){
-                                                  if($row['status'] == 0)
-                                                  {					
+                            if($row['status'] == 0)
+                            {					
 ?>						
 						 <tr>
-						<td><input type="radio" name="reconciled2" value="<?php echo $row['id'] ?>"><br><label for="reconcile bank stmt"></label></td>
-                        <td><?php echo $row['cdate']; ?></td>
-                        <td><?php echo $row['particulars']; ?></td>
-                        <td><?php echo $row['reference']; ?></td>
+                             <td>
+                                 <input type="radio" name="reconciled2" value="<?php echo $row['id'] ?>"><br>
+                                 <label for="reconcile bank stmt"></label>
+                             </td>
+                             
+                             <td>
+                                 <?php
+                                    $date = $row['cdate'];
+                                    echo substr("$date", 0, 6);
+                                ?>
+                            </td>
+                             
+                            <?php $particulars = $row['particulars'];?>
+                            <td onclick="myFunction('<?php echo $particulars; ?>');">
+                                <span id="<?php echo $particulars; ?>">
+                                <?php
+                                    echo substr("$particulars", 0, 8) . "...";
+                                ?>
+                                </span>
+                            </td>
+                             
+                             <?php $ref = $row['reference'];?>
+                                <td onclick="myFunction('<?php echo $ref; ?>');">
+                                    <span id="<?php echo $ref; ?>">
+                                        <?php
+                                            echo substr("$ref", 0, 7) . "...";
+                                        ?>
+                                    </span>
+                                </td>
+                             
                         <td><?php echo $row['deposits']; ?></td>
                         <td><?php echo $row['withdrawals']; ?></td>
                         <td><?php echo $row['bankname']; ?></td>
-                        <td><?php echo $row['status'];?></td>
 						</tr>
 						<?php }
 }
