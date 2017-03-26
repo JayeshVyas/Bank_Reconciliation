@@ -35,7 +35,7 @@ if(!empty($_GET['status'])){
   
 </head>
 <body>
-
+<form action="changestatus.php" method="post" id="manage">
 <div class="container-fluid" >
   <?php if(!empty($statusMsg)){
             echo '<div class="alert '.$statusMsgClass.'">'.$statusMsg.'</div>';
@@ -44,7 +44,7 @@ if(!empty($_GET['status'])){
 		
 		 
 		<nav class="navbar navbar-inverse navbar-static-top" role="navigation" style="background-color:white;">
-    <div class="container-fluid">
+    <!--<div class="container-fluid">
                      Statement
             <a href="javascript:void(0);" onclick="$('#importFrm').slideToggle();">Import Another Statement</a>
 			<form action="importData.php" method="post" enctype="multipart/form-data" id="importFrm">
@@ -55,7 +55,7 @@ if(!empty($_GET['status'])){
                 <input type="file" name="file" />
                 <input type="submit" class="btn btn-primary" name="importSubmit" value="IMPORT">
             </form>
-    </div>
+    </div>-->
 </nav>
 
 
@@ -81,7 +81,10 @@ if(!empty($_GET['status'])){
 						//	require("filedata.php");
 						$sql = "SELECT * FROM bankstatement";
 						$result  = mysqli_query($db,$sql);
-						while($row=mysqli_fetch_array($result)){			
+						if($result->num_rows > 0){
+						while($row=mysqli_fetch_array($result)){
+                                                   if($row['status'] == 0)
+                                                   {			
 ?>						
 						 <tr>
 						
@@ -92,12 +95,14 @@ if(!empty($_GET['status'])){
                         <td><?php echo $row['withdrawals']; ?></td>
                         <td><?php echo $row['bankname']; ?></td>
                         <td><?php echo $row['status'];?></td>
-						<td><input type="checkbox" name="ch[$i++]"/><label for="reconcile bank stmt"></label></td>
+						<td><input type="radio" name="reconciled" value="<?php echo $row['id'] ?>"><br><label for="reconcile bank stmt"></label></td>
 
                     
 					</tr>
 					
-						<?php } ?>
+						<?php }
+}
+}						?>
 						</tbody>
 						</table>
   </div>
@@ -109,6 +114,7 @@ if(!empty($_GET['status'])){
   <table  id="preTable2" class="table table-striped" >
 						<thead>
 							<tr>
+						<th></th>
                         <th>Date</th>
                         <th>Particulars</th>
                         <th>Cheque/Ref. No.</th>
@@ -124,9 +130,14 @@ if(!empty($_GET['status'])){
 						//	require("filedata.php");
 						$sql = "SELECT * FROM internalstatement";
 						$result  = mysqli_query($db,$sql);
-						while($row=mysqli_fetch_array($result)){			
+						if($result->num_rows > 0)
+						{
+						while($row=mysqli_fetch_array($result)){
+                                                  if($row['status'] == 0)
+                                                  {					
 ?>						
 						 <tr>
+						<td><input type="radio" name="reconciled2" value="<?php echo $row['id'] ?>"><br><label for="reconcile bank stmt"></label></td>
                         <td><?php echo $row['cdate']; ?></td>
                         <td><?php echo $row['particulars']; ?></td>
                         <td><?php echo $row['reference']; ?></td>
@@ -134,9 +145,10 @@ if(!empty($_GET['status'])){
                         <td><?php echo $row['withdrawals']; ?></td>
                         <td><?php echo $row['bankname']; ?></td>
                         <td><?php echo $row['status'];?></td>
-						<td><input type="checkbox" name="ch[$i++]"/><label for="reconcile bank stmt"></label></td>
-                    </tr>
-						<?php } ?>
+						</tr>
+						<?php }
+}
+}						?>
     </tbody>
   </table>
   </div>
@@ -156,5 +168,9 @@ if(!empty($_GET['status'])){
 			});
 	});
 	</script>
+		<input type="submit" form="manage" name="Submit" value="Reconcile Checked"style="float: right;"></button>
+
+	
+	</form>
 </body>
 </html>
