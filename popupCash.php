@@ -45,18 +45,20 @@
     
     <body>
 
-        <h2>Modal Example</h2>
+        <h2>Reconcile cash</h2>
 
         <!-- Trigger/Open The Modal -->
-        <button id="myBtn">Open Modal</button>
+        <button id="myBtn">Reconcile Cash</button>
 
         <!-- The Modal -->
         <div id="myModal" class="modal">
 
           <!-- Modal content -->
             <div class="modal-content">
+                
                 <span class="close">&times;</span>
-                    <form action="reconcileCash.php" method="post">
+                <form action="reconcileCash.php" method="post">
+                    <input type="checkbox" name="cashEntry[]" id="cashEntry" value="0" checked hidden>
                     <table align="center" border="1px" cellpadding="10px">
                         <tr>
                             <th>Reconcile</th>
@@ -73,7 +75,7 @@
                         //load the database configuration file
                         include 'DBConfig.php';
 
-                        $sql = "SELECT * from internalStatement;";
+                        $sql = "SELECT * from internalStatement where `status`='0';";
                         $result = $db->query($sql);
                         if($result->num_rows > 0)
                         {
@@ -116,9 +118,13 @@
                                 }
                             }    
                         }
+                        else
+                        {
+                            echo "No records found...";
+                        }
                         ?>
                         <tr>
-                            <td colspan="7"><input type="submit"></td>
+                            <td colspan="8"><input type="submit"></td>
                         </tr>
                         </table>
                 </form>
