@@ -55,7 +55,15 @@
 
           <!-- Modal content -->
             <div class="modal-content">
-                
+                <script language="JavaScript">
+                    function toggle(source) {
+                        checkboxes = document.getElementsByName('cashEntry[]');
+                        for(var i=0, n=checkboxes.length;i<n;i++) {
+                            checkboxes[i].checked = source.checked;
+                        }
+                    }
+                </script>
+                <input type="checkbox" onClick="toggle(this)" />Check/ Uncheck all<br/>
                 <span class="close">&times;</span>
                 <form action="reconcileCash.php" method="post">
                     <input type="checkbox" name="cashEntry[]" id="cashEntry" value="0" checked hidden>
@@ -124,7 +132,7 @@
                         }
                         ?>
                         <tr>
-                            <td colspan="8"><input type="submit"></td>
+                            <td colspan="8"><input type="submit" value="Reconcile"></td>
                         </tr>
                         </table>
                 </form>
