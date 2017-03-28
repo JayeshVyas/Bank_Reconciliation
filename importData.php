@@ -12,10 +12,18 @@ if(isset($_POST['importSubmit'])){
             //open uploaded csv file with read only mode
             $csvFile = fopen($_FILES['file']['tmp_name'], 'r');
             
-            //skip first line
-            fgetcsv($csvFile);
-            
             $bank = $_POST["selectBank"];
+            
+            if($bank == 'SBI')
+            {
+                for($i=0; $i<20; $i++)
+                    fgetcsv($csvFile);
+            }
+            else
+            {
+                //skip first line
+                fgetcsv($csvFile);
+            }
             
             //parse data from csv file line by line
             while(($line = fgetcsv($csvFile)) !== FALSE)
@@ -27,7 +35,7 @@ if(isset($_POST['importSubmit'])){
                 {
                     $prevQuery = "SELECT id FROM bankStatement WHERE particulars = '".$line[1]."' and cdate = '".$line[0]."' and reference= '".$line[2]."' and deposits = '".$line[4]."' and withdrawals = '".$line[5]."' and bankname = '".$bank."'";
                 }
-                else if($bank == 'SBI')
+                else if($bank == 'SBI' && $line[2]!='')
                 {
                     $prevQuery = "SELECT id FROM bankStatement WHERE particulars = '".$line[2]."' and cdate = '".$line[0]."' and reference= '".$line[3]."' and deposits = '".$line[5]."' and withdrawals = '".$line[4]."' and bankname = '".$bank."'";
                 }
