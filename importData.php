@@ -1,34 +1,34 @@
 <?php
-//load the database configuration file
 include 'DBConfig.php';
+?>
 
-if(isset($_POST['importSubmit'])){
-    
-    //validate whether uploaded file is a csv file
-    $csvMimes = array('text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream', 'application/vnd.ms-excel', 'application/x-csv', 'text/x-csv', 'text/csv', 'application/csv', 'application/excel', 'application/vnd.msexcel', 'text/plain');
-    if(!empty($_FILES['file']['name']) && in_array($_FILES['file']['type'],$csvMimes)){
-        if(is_uploaded_file($_FILES['file']['tmp_name'])){
-            
-            //open uploaded csv file with read only mode
-            $csvFile = fopen($_FILES['file']['tmp_name'], 'r');
-            
+<?php
+if(isset($_POST['importSubmit']))
+{
+    //Checking whether the uploaded file is csv or not
+    $mimes = array('application/vnd.ms-excel','text/plain','text/csv','text/tsv');
+    if(in_array($_FILES['file']['type'],$mimes))
+    {
+        if(is_uploaded_file($_FILES['file']['tmp_name']))
+        {
+            $csv = fopen($_FILES['file']['tmp_name'], 'r');
             $bank = $_POST["selectBank"];
             
+            //Skipping lines
             if($bank == 'SBI')
             {
                 for($i=0; $i<20; $i++)
-                    fgetcsv($csvFile);
+                    fgetcsv($csv);
             }
             else
             {
-                //skip first line
-                fgetcsv($csvFile);
+                fgetcsv($csv);
             }
             
-            //parse data from csv file line by line
-            while(($line = fgetcsv($csvFile)) !== FALSE)
+            //Reading data from file
+            while(($line = fgetcsv($csv)) !== FALSE)
             {
-                //check whether data already exists in database with same entries
+                //If data is already present then skip
                 $prevResults='SELECT * from bankStatement';
                 echo $bank;
                 if($bank == 'HDFC')
@@ -64,16 +64,16 @@ if(isset($_POST['importSubmit'])){
             }
             
             //close opened csv file
-            fclose($csvFile);
-
-            $qstring = '?status=succ';
-        }else{
-            $qstring = '?status=err';
+            fclose($csv);
+            $st = 'success';
         }
-    }else{
-        $qstring = '?status=invalid_file';
+        else
+            $st = 'error';
     }
+    else
+        $st = 'invalid_file';
 }
 
 //redirect to the listing page
-header("Location: index.php".$qstring);
+header("Location: index.php?st=".$st);
+?>
