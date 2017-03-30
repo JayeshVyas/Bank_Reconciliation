@@ -75,5 +75,5 @@ if(isset($_POST['importSubmit']))
 }
 
 //redirect to the listing page
-header("Location: index.php?st=".$st);
+header("Location: bank_statement.php?st=".$st);
 ?>
