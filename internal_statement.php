@@ -51,7 +51,7 @@ if(!empty($_GET['st']))
     <body>
         <?php include "navigation.php"; ?>
         <div class="container">
-            <h2 align="center" style="margin-top:55px">Bank Statement</h2>
+            <h2 align="center" style="margin-top:55px">Internal Statement</h2>
             
         
     <div class="panel">
