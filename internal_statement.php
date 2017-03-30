@@ -29,10 +29,10 @@ if(!empty($_GET['st']))
     <script src="js/js2.js"></script>
     <style type="text/css">
         a:link, a:visited, a:active{
-            color: #F39C12;
+            color: #4C14FC;
         }
         a:hover{
-            color: #E59866;
+            color: #8816E1;
         }
         #importFrm{
             margin-bottom: 20px;
@@ -51,7 +51,7 @@ if(!empty($_GET['st']))
     <body>
         <?php include "navigation.php"; ?>
         <div class="container">
-            <h2 align="center">Internal Statement</h2>
+            <h2 align="center" style="margin-top:55px">Bank Statement</h2>
             
         
     <div class="panel">
@@ -79,6 +79,8 @@ if(!empty($_GET['st']))
                 <input type="file" name="file" />
                 <input type="submit" class="btn btn-warning btn-small" name="importSubmit" value="Import">
             </form>
+                                    <p style="visibility:hidden" This is for new line/p>
+
             
             <script type="text/javascript"> 
                 $(document).ready( function() {
