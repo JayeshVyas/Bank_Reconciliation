@@ -38,14 +38,14 @@ if(isset($_POST['importSubmit'])){
             //close opened csv file
             fclose($csvFile);
 
-            $qstring = '?status=succ';
+            $st = 'success';
         }else{
-            $qstring = '?status=err';
+            $st = 'error';
         }
     }else{
-        $qstring = '?status=invalid_file';
+        $st = 'invalid_file';
     }
 }
 
 //redirect to the listing page
-header("Location: internal_statement.php".$qstring);
+header("Location: internal_statement.php?st=".$st);

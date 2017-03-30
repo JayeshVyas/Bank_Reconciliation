@@ -25,13 +25,14 @@ if(!empty($_GET['status'])){
 <html lang="en">
     <head>
         <title>Bank Statement</title>
-       <meta charset="utf-8">
+
+        <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="css/style1.css">
+        <link rel="stylesheet" type="text/css" href="css/style2.css">
         <script src="js/js1.js"></script>
         <script src="js/js2.js"></script>
-        <script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js" ></script>
-        <link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">
+        <script src="js/js3.js"></script>
         <script>
             x = 0;
             function myFunction(a)
@@ -271,10 +272,10 @@ if(!empty($_GET['status'])){
                     echo '<div class="alert '.$statusMsgClass.'">'.$statusMsg.'</div>';
                 }
                 ?>
-                
-                
-                <div class="row" style="margin-top: 3%; padding-top:25px; margin-right:1px; margin-left:1px">
-                    <div class="col-sm-6" style="background-color:#FCF3CF" style="padding-top: 10px;">
+              
+              <div class="row" style="margin-top: 3%; padding-top:25px; margin-right:1px; margin-left:1px">
+
+                <div class="col-sm-6" style="background-color:#FCF3CF" style="padding-top: 10px;">
                         <h3 align="center">Bank Statement Records</h3><br />
                         <div class="table-responsive">
                             

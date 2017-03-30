@@ -1,67 +1,100 @@
 <?php
-//load the database configuration file
 include 'DBConfig.php';
-
-if(!empty($_GET['status'])){
-    switch($_GET['status']){
-        case 'succ':
-            $statusMsgClass = 'alert-success';
-            $statusMsg = 'Statement has been uploaded successfully.';
-            break;
-        case 'err':
-            $statusMsgClass = 'alert-danger';
-            $statusMsg = 'Some problem occurred, please try again.';
-            break;
-        case 'invalid_file':
-            $statusMsgClass = 'alert-danger';
-            $statusMsg = 'Please upload a valid CSV file.';
-            break;
-        default:
-            $statusMsgClass = '';
-            $statusMsg = '';
+$msg= '';
+if(!empty($_GET['st']))
+{
+    if($_GET['st'] == 'success')
+    {
+        $msg = 'Statement has been uploaded successfully.';
+    }
+    else if($_GET['st'] == 'error')
+    {
+        $msg = 'Some problem occurred. Please try again.';
+    }
+    else if($_GET['st'] == 'invalid_file')
+    {
+        $msg = 'Please upload a valid CSV file.';
     }
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Internal Statement</title>
+    <title>Bank Reconciliation</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style1.css">
+
+    <script src="js/js1.js"></script>
+    <script src="js/js2.js"></script>
     <style type="text/css">
-        .panel-heading a{float: right;}
-        #importFrm{margin-bottom: 20px;display: none;}
-        #importFrm input[type=file] {display: inline;}
+        a:link, a:visited, a:active{
+            color: #F39C12;
+        }
+        a:hover{
+            color: #E59866;
+        }
+        #importFrm{
+            margin-bottom: 20px;
+            display: none;
+        }
+        #importFrm input[type=file] {
+            display: inline;
+        }
+        #n{
+            color: black;
+            text-decoration: none;
+        }
     </style>
-</head>
-<body>
-    <div class="container">
-        <h2>Internal Statement</h2>
-        <?php if(!empty($statusMsg)){
-            echo '<div class="alert '.$statusMsgClass.'">'.$statusMsg.'</div>';
-        } ?>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            Statement
-            <a href="javascript:void(0);" onclick="$('#importFrm').slideToggle();">Import Statement</a>
-        </div>
-        <div class="panel-body">
+    </head>
+
+    <body>
+        <?php include "navigation.php"; ?>
+        <div class="container">
+            <h2 align="center">Internal Statement</h2>
+            
+        
+    <div class="panel">
+        
+        <?php
+        if($msg == '')
+        {
+            
+        }
+        else if($msg=='Statement has been uploaded successfully.'){ ?>
+            <div id="deletesuccess" style="display:inline-block; float:right; background-color: #ABEBC6; padding: 10px 40px 10px 40px; width: 100%; border: 0px solid; border-radius=10%;">
+                <?php echo $msg; ?>
+            </div>
+            <?php }
+            else{?>
+            <div id="deletesuccess" style="display:inline-block; float:right; background-color: #F5B7B1; padding: 10px 40px 10px 40px; width: 100%; border-radius=5%;">
+                <?php echo $msg; ?>
+            </div>
+            <?php } ?>
+        
+        <div class="panel-body" id="maindiv">
+            <a href="javascript:void(0);" onclick="$('#importFrm').slideToggle();" style="font-size:18px; text-decoration:none;">Import Another Statement</a>
+            
             <form action="importInternalData.php" method="post" enctype="multipart/form-data" id="importFrm">
                 <input type="file" name="file" />
-                <input type="submit" class="btn btn-primary" name="importSubmit" value="IMPORT">
+                <input type="submit" class="btn btn-warning btn-small" name="importSubmit" value="Import">
             </form>
-            <table class="table table-bordered">
+            
+            <script type="text/javascript"> 
+                $(document).ready( function() {
+                    $('#deletesuccess').delay(2000).fadeOut();
+                });
+            </script>
+            
+            <table class="table" border="1px groove" style="border-color: #85929E">
                 <thead>
-                    <tr>
+                    <tr border="1px">
                         <th>Date</th>
                         <th>Particulars</th>
                         <th>Cheque/Ref. No.</th>
-                        <th>Bank Name</th>
                         <th>Deposits</th>
                         <th>Withdrawals</th>
+                        <th>Bank Name</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -71,18 +104,37 @@ if(!empty($_GET['status'])){
                     $query = $db->query("SELECT * FROM internalstatement");
                     if($query->num_rows > 0){ 
                         while($row = $query->fetch_assoc()){
+                            if($row['status'] == 0)
+                            {
                         ?>
-                    <tr>
+                    <tr style="background-color: #FDEDEC">
                         <td><?php echo $row['cdate']; ?></td>
                         <td><?php echo $row['particulars']; ?></td>
                         <td><?php echo $row['reference']; ?></td>
                         <td><?php echo $row['deposits']; ?></td>
                         <td><?php echo $row['withdrawals']; ?></td>
                         <td><?php echo $row['bankname']; ?></td>
-                        <td><?php echo $row['status']; ?></td>
+                        <td>Unreconciled</td>
                     </tr>
+                    <?php
+                            }
+                            else
+                            {
+                            ?>
+                    <tr style="background-color: #E8F8F5">
+                        <td><?php echo $row['cdate']; ?></td>
+                        <td><?php echo $row['particulars']; ?></td>
+                        <td><?php echo $row['reference']; ?></td>
+                        <td><?php echo $row['deposits']; ?></td>
+                        <td><?php echo $row['withdrawals']; ?></td>
+                        <td><?php echo $row['bankname']; ?></td>
+                        <td>Reconciled</td>
+                    </tr>
+                    <?php
+                            }
+                            ?>
                     <?php } }else{ ?>
-                    <tr><td colspan="8">No record(s) found.....</td></tr>
+                    <tr><td colspan="8">No statement(s) to be displayed...</td></tr>
                     <?php } ?>
                 </tbody>
             </table>
@@ -92,3 +144,4 @@ if(!empty($_GET['status'])){
 
 </body>
 </html>
+

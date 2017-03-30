@@ -47,11 +47,11 @@ if(!empty($_GET['st']))
         }
     </style>
     </head>
-    <br>
 
     <body>
         <?php include"navigation.php"; ?>
         <div class="container">
+
             <h2 align="center" style="margin-top:55px">Bank Statement</h2>
             
         
@@ -84,15 +84,14 @@ if(!empty($_GET['st']))
                 <input type="file" name="file" />
                 <input type="submit" class="btn btn-warning btn-small" name="importSubmit" value="Import">
             </form>
-                        <p style="visibility:hidden" This is for new line/p>
 
-            
+                        <p style="visibility:hidden"> This is for new line</p>            
             <script type="text/javascript"> 
                 $(document).ready( function() {
                     $('#deletesuccess').delay(2000).fadeOut();
                 });
             </script>
-            <table class="table" border="1px groove" style="border-color: #85929E">
+          <table class="table" border="1px groove" style="border-color: #85929E">
                 <thead>
                     <tr border="1px">
                         <th>Date</th>

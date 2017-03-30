@@ -1,33 +1,41 @@
 <?php
-//load the database configuration file
 include 'DBConfig.php';
+?>
 
-if(isset($_POST['importSubmit'])){
-    
-    //validate whether uploaded file is a csv file
-    $csvMimes = array('text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream', 'application/vnd.ms-excel', 'application/x-csv', 'text/x-csv', 'text/csv', 'application/csv', 'application/excel', 'application/vnd.msexcel', 'text/plain');
-    if(!empty($_FILES['file']['name']) && in_array($_FILES['file']['type'],$csvMimes)){
-        if(is_uploaded_file($_FILES['file']['tmp_name'])){
-            
-            //open uploaded csv file with read only mode
-            $csvFile = fopen($_FILES['file']['tmp_name'], 'r');
-            
-            //skip first line
-            fgetcsv($csvFile);
-            
+<?php
+if(isset($_POST['importSubmit']))
+{
+    //Checking whether the uploaded file is csv or not
+    $mimes = array('application/vnd.ms-excel','text/plain','text/csv','text/tsv');
+    if(in_array($_FILES['file']['type'],$mimes))
+    {
+        if(is_uploaded_file($_FILES['file']['tmp_name']))
+        {
+            $csv = fopen($_FILES['file']['tmp_name'], 'r');
             $bank = $_POST["selectBank"];
             
-            //parse data from csv file line by line
-            while(($line = fgetcsv($csvFile)) !== FALSE)
+            //Skipping lines
+            if($bank == 'SBI')
             {
-                //check whether data already exists in database with same entries
+                for($i=0; $i<20; $i++)
+                    fgetcsv($csv);
+            }
+            else
+            {
+                fgetcsv($csv);
+            }
+            
+            //Reading data from file
+            while(($line = fgetcsv($csv)) !== FALSE)
+            {
+                //If data is already present then skip
                 $prevResults='SELECT * from bankStatement';
                 echo $bank;
                 if($bank == 'HDFC')
                 {
                     $prevQuery = "SELECT id FROM bankStatement WHERE particulars = '".$line[1]."' and cdate = '".$line[0]."' and reference= '".$line[2]."' and deposits = '".$line[4]."' and withdrawals = '".$line[5]."' and bankname = '".$bank."'";
                 }
-                else if($bank == 'SBI')
+                else if($bank == 'SBI' && $line[2]!='')
                 {
                     $prevQuery = "SELECT id FROM bankStatement WHERE particulars = '".$line[2]."' and cdate = '".$line[0]."' and reference= '".$line[3]."' and deposits = '".$line[5]."' and withdrawals = '".$line[4]."' and bankname = '".$bank."'";
                 }
@@ -56,16 +64,16 @@ if(isset($_POST['importSubmit'])){
             }
             
             //close opened csv file
-            fclose($csvFile);
-
-            $qstring = '?status=succ';
-        }else{
-            $qstring = '?status=err';
+            fclose($csv);
+            $st = 'success';
         }
-    }else{
-        $qstring = '?status=invalid_file';
+        else
+            $st = 'error';
     }
+    else
+        $st = 'invalid_file';
 }
 
 //redirect to the listing page
-header("Location: index.php".$qstring);
+header("Location: bank_statement.php?st=".$st);
+?>

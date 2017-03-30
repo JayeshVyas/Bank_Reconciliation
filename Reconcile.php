@@ -12,15 +12,23 @@ if($result->num_rows > 0)
         $result1 = $db->query($query);
         while($row1 = $result1->fetch_assoc())
         {
-            if($row["status"] != 0 && $row["reference"] != '' && $row1["status"] != 0)
+            $bref = $row1["reference"];
+            $iref = $row["reference"];
+            $bref = ltrim($bref, '0');
+            $iref = ltrim($iref, '0');
+            
+            if($row["status"] != 1 && $row["reference"] != '' && $row1["status"] != 1)
             {
                 //Reconcile record having common reference number
-                if(($row["reference"] == $row1["reference"]) && ($row["deposits"] == $row1["deposits"]) && ($row["withdrawals"] == $row1["withdrawals"]) && ($row["bankname"] == $row1["bankname"]))
+                if(($iref == $bref) && ($row["deposits"] == $row1["deposits"]) && ($row["withdrawals"] == $row1["withdrawals"]) && ($row["bankname"] == $row1["bankname"]))
                 {
-                    $change = "UPDATE `bankstatement` SET `status` = '0' WHERE `bankstatement`.`id` =" . $row1["id"];
-                    $change1 = "UPDATE `internalstatement` SET `status` = '0' WHERE `internalstatement`.`id` =" . $row["id"];
+                    $bid = $row1["id"];
+                    $change = "UPDATE `bankstatement` SET `status` = '1' WHERE `bankstatement`.`id` =" . $row1["id"];
+                    $change1 = "UPDATE `internalstatement` SET `status` = '1' WHERE `internalstatement`.`id` =" . $row["id"];
+                    $change2 = "UPDATE `internalstatement` SET `bid`=$bid WHERE `internalstatement`.`id` =" . $row["id"];
                     $db->query($change);
                     $db->query($change1);
+                    $db->query($change2);
                 }
             }
             
@@ -31,20 +39,43 @@ if($result->num_rows > 0)
             $bparticulars = $row1["particulars"];
             $bparticulars = strtolower($bparticulars);
             
+            
             //Regular expression
             if (preg_match('/cash/',$iparticulars) && preg_match('/cash/',$bparticulars))
             {
+                
+            }
+            
+            //Regular expression
+            else if (preg_match('/atm/',$iparticulars) && preg_match('/atm/',$bparticulars))
+            {
                 if(($row["deposits"] == $row1["deposits"]) && ($row["withdrawals"] == $row1["withdrawals"]) && ($row["bankname"] == $row1["bankname"]))
                 {
-                    $change = "UPDATE `bankstatement` SET `status` = '0' WHERE `bankstatement`.`id` =" . $row1["id"];
-                    $change1 = "UPDATE `internalstatement` SET `status` = '0' WHERE `internalstatement`.`id` =" . $row["id"];
+                    $bid = $row1["id"];
+                    $change = "UPDATE `bankstatement` SET `status` = '1' WHERE `bankstatement`.`id` =" . $row1["id"];
+                    $change1 = "UPDATE `internalstatement` SET `status` = '1' WHERE `internalstatement`.`id` =" . $row["id"];
+                    $change2 = "UPDATE `internalstatement` SET `bid`=$bid WHERE `internalstatement`.`id` =" . $row["id"];
                     $db->query($change);
                     $db->query($change1);
+                    $db->query($change2);
+                }
+            }
+            
+            else if($row["status"] != 1 && $row["reference"] == '' && $row1["status"] != 1)
+            {
+                //Reconcile record having common reference number
+                if($row["deposits"] == $row1["deposits"] && ($row["withdrawals"] == $row1["withdrawals"]) && ($row["bankname"] == $row1["bankname"]) && (strtolower(ltrim($row["particulars"], ' ')) == strtolower(ltrim($row1["particulars"], ' '))))
+                {
+                    $bid = $row1["id"];
+                    $change = "UPDATE `bankstatement` SET `status` = '1' WHERE `bankstatement`.`id` =" . $row1["id"];
+                    $change1 = "UPDATE `internalstatement` SET `status` = '1' WHERE `internalstatement`.`id` =" . $row["id"];
+                    $change2 = "UPDATE `internalstatement` SET `bid`=$bid WHERE `internalstatement`.`id` =" . $row["id"];
+                    $db->query($change);
+                    $db->query($change1);
+                    $db->query($change2);
                 }
             }
         }
-    }
-     
+    }    
 }
-
 ?>
