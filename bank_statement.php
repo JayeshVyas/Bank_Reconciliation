@@ -41,10 +41,15 @@ if(!empty($_GET['st']))
         #importFrm input[type=file] {
             display: inline;
         }
+        #n{
+            color: black;
+            text-decoration: none;
+        }
     </style>
     </head>
 
     <body>
+        <?php include"navigation.php"; ?>
         <div class="container">
             <h2 align="center">Bank Statement</h2>
             
