@@ -52,7 +52,7 @@ if(!empty($_GET['status'])){
         <style>
             table, td, th
             {
-                font-size: 14px;
+                font-size: 12px;
             }
             td 
             {
